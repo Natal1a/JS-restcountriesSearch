@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Countries </title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder=" ">
+    <ul class="suggestions">
+
+    </ul>
+  </form>
+<script>
+const endpoint = 'https://restcountries.eu/rest/v2/all';
+const countries = [];
+
+fetch(endpoint)
+  .then(resp => resp.json())
+  .then(data => countries.push(...data));
+
+  console.log(countries);
+
+function findMatches(wordToMatch, countries){
+  return countries.filter(place => {
+    const regex = new RegExp(wordToMatch, 'gi');
+    // console.log(place.name, place.capital);
+    return place.name.match(regex) || place.capital.match(regex);
+  });
+}
+
+function displayMatches(){
+  const matchArray = findMatches(this.value, countries);
+  const suggestions = document.querySelector('.suggestions');
+  console.log(matchArray);
+  const html = matchArray.map(place => {
+    // const regex = new RegExp(this.value, 'gi')
+    return `<li>
+      <span>${place.name} ${place.capital}</span>
+    </li>`
+  }).join('');
+  suggestions.innerHTML = html;
+}
+
+const input = document.querySelector('.search');
+input.addEventListener('change', displayMatches);
+input.addEventListener('keyup', displayMatches);
+</script>
+  </body>
+</html>
